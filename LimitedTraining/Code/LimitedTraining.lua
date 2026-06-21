@@ -1,11 +1,13 @@
 -- Limited Training mod for Jagged Alliance 3
--- author: claudio
+-- author: clatao
 --
 -- In this mod, mercs can only gain a limited number of points from training in
 -- in a given Attribute. Once they hit the cap, they won't be able to train
 -- that Attribute further.
 
-local MAX_TRAINING_POINTS = 10
+local function GetMaxTrainingPoints()
+	return tonumber(CurrentModOptions and CurrentModOptions.MaxTrainingPoints) or 10
+end
 
 -- Count stat points gained via training for a given stat.
 -- Training gains use modifier ids with the format "StatTraining-{stat}-{session_id}-{ticks}",
@@ -33,7 +35,7 @@ function OnMsg.DataLoaded()
 		if profession == "Student" then
 			local sector = merc:GetSector()
 			local stat = sector and sector.training_stat
-			if stat and CountTrainingPoints(merc, stat) >= MAX_TRAINING_POINTS then
+			if stat and CountTrainingPoints(merc, stat) >= GetMaxTrainingPoints() then
 				return false
 			end
 		end
@@ -60,7 +62,7 @@ function OnMsg.DataLoaded()
 
 		if merc.OperationProfession == "Teacher" then
 			for _, student in ipairs(GetOperationProfessionals(sector.Id, self.id, "Student")) do
-				if CountTrainingPoints(student, stat) >= MAX_TRAINING_POINTS then
+				if CountTrainingPoints(student, stat) >= GetMaxTrainingPoints() then
 					student:SetCurrentOperation("Idle")
 				end
 			end
@@ -68,13 +70,13 @@ function OnMsg.DataLoaded()
 			orig_Tick(self, merc)
 
 			for _, student in ipairs(GetOperationProfessionals(sector.Id, self.id, "Student")) do
-				if CountTrainingPoints(student, stat) >= MAX_TRAINING_POINTS then
+				if CountTrainingPoints(student, stat) >= GetMaxTrainingPoints() then
 					student:SetCurrentOperation("Idle")
 				end
 			end
 
 		elseif merc.OperationProfession == "Student" then
-			if CountTrainingPoints(merc, stat) >= MAX_TRAINING_POINTS then
+			if CountTrainingPoints(merc, stat) >= GetMaxTrainingPoints() then
 				merc:SetCurrentOperation("Idle")
 				return
 			end
@@ -82,7 +84,7 @@ function OnMsg.DataLoaded()
 			-- Only solo students update their own progress in their Tick; with a teacher
 			-- present the teacher's branch above already handles the post-tick check.
 			local teachers = GetOperationProfessionals(sector.Id, self.id, "Teacher")
-			if not next(teachers) and CountTrainingPoints(merc, stat) >= MAX_TRAINING_POINTS then
+			if not next(teachers) and CountTrainingPoints(merc, stat) >= GetMaxTrainingPoints() then
 				merc:SetCurrentOperation("Idle")
 			end
 		else
