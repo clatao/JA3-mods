@@ -14,7 +14,7 @@ A collection of mods for [Jagged Alliance 3](https://www.thqnordic.com/games/jag
 
 > Caps the number of stat points a mercenary can gain through the Train Mercs operation.
 
-In vanilla JA3, mercs can train an attribute via the Train Mercs sector operation. This mod introduces a hard cap per attribute per merc — once a merc has gained the configured number of points through training, they can no longer be assigned as a Student for that attribute.
+In vanilla JA3, mercs can train an attribute via the Train Mercs sector operation. This mod introduces a hard cap per attribute per merc; once a merc has gained the configured number of points through training, they can no longer be assigned as a Student for that attribute.
 
 Other stat gains (Field Experience and Magazines) are unaffected and do not count toward the cap.
 
